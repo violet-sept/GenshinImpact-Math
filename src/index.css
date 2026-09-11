@@ -1,0 +1,263 @@
+@import 'tailwindcss';
+
+/* 深色模式：由 <html class="dark"> 控制（首屏脚本已提前应用，避免闪白） */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 高对比度主题：投影仪 / 低视力场景 */
+@custom-variant hc (&:where(.contrast-high, .contrast-high *));
+
+/* ============================================================
+   设计令牌 —— 对应规划书 §6.4「色彩与视觉语义系统」
+   颜色即语义：每个语义色都必须在图例 / 纹理 / 文字上有冗余表达
+   ============================================================ */
+@theme {
+  --font-sans: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* 集合 A / 主体 */
+  --color-a-50: #eff6ff;
+  --color-a-100: #dbeafe;
+  --color-a-300: #93c5fd;
+  --color-a-500: #3b82f6;
+  --color-a-600: #2563eb;
+  --color-a-700: #1d4ed8;
+
+  /* 集合 B / 客体 */
+  --color-b-50: #f5f3ff;
+  --color-b-100: #ede9fe;
+  --color-b-300: #c4b5fd;
+  --color-b-500: #8b5cf6;
+  --color-b-600: #7c3aed;
+  --color-b-700: #6d28d9;
+
+  /* 正确 / 已完成 */
+  --color-ok-50: #ecfdf5;
+  --color-ok-100: #d1fae5;
+  --color-ok-500: #10b981;
+  --color-ok-600: #059669;
+  --color-ok-700: #047857;
+
+  /* 错误 / 冲突（刻意不用纯红：降低焦虑、兼顾色觉障碍） */
+  --color-bad-50: #fff7ed;
+  --color-bad-100: #ffedd5;
+  --color-bad-500: #f97316;
+  --color-bad-600: #ea580c;
+  --color-bad-700: #c2410c;
+
+  /* 新增 / 当前步骤 */
+  --color-cur-50: #fffbeb;
+  --color-cur-100: #fef3c7;
+  --color-cur-500: #f59e0b;
+  --color-cur-600: #d97706;
+  --color-cur-700: #b45309;
+
+  /* 已废弃 / 排除 */
+  --color-dim-300: #cbd5e1;
+  --color-dim-500: #94a3b8;
+  --color-dim-600: #64748b;
+
+  /* 站名徽标 / 高亮强调：荧光绿（必须配深色文字，见 AppShell 的 text-slate-900） */
+  --color-neon-300: #86ff6b;
+  --color-neon-400: #39ff14;
+  --color-neon-500: #2ee60f;
+
+  /* 动效曲线（规划书 §6.2：全站统一缓动） */
+  --ease-dl: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* 断点对齐规划书 §8.1 */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1440px;
+}
+
+/* ============================================================
+   基础层
+   ============================================================ */
+@layer base {
+  :root {
+    --dl-font-scale: 1;
+    --dl-dur-fast: 160ms;
+    --dl-dur: 320ms;
+    --dl-dur-slow: 560ms;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    font-size: calc(100% * var(--dl-font-scale, 1));
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased;
+    font-family: var(--font-sans);
+    /* 移动端安全区：刘海屏 / 手势条 */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .dark body {
+    @apply bg-slate-950 text-slate-200;
+  }
+
+  /* 焦点可见：无障碍硬要求（规划书 §8.6），且必须在深色下也可辨 */
+  :focus-visible {
+    outline: 3px solid var(--color-a-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* 尊重系统「减少动态效果」+ 站内手动开关（规划书 §6.2） */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      --dl-dur-fast: 1ms;
+      --dl-dur: 1ms;
+      --dl-dur-slow: 1ms;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  html.motion-off {
+    --dl-dur-fast: 1ms;
+    --dl-dur: 1ms;
+    --dl-dur-slow: 1ms;
+  }
+
+  html.motion-off *,
+  html.motion-off *::before,
+  html.motion-off *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* 屏幕阅读器专用文本 */
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
+
+/* ============================================================
+   工具类
+   ============================================================ */
+@utility dl-transition {
+  transition-property: color, background-color, border-color, fill, stroke, opacity, transform;
+  transition-duration: var(--dl-dur);
+  transition-timing-function: var(--ease-dl);
+}
+
+/* 交互画布：画布内拖动 = 操作对象，因此必须禁用浏览器默认滚动/缩放手势 */
+/* （规划书 §8.2 手势冲突治理） */
+@utility dl-canvas-touch {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: contain;
+}
+
+/* 可拖拽对象：触摸端给一个更大的命中范围由外层承担 */
+@utility dl-grab {
+  cursor: grab;
+}
+@utility dl-grabbing {
+  cursor: grabbing;
+}
+
+@layer components {
+  .dl-card {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+  }
+  .dark .dl-card {
+    @apply border-slate-800 bg-slate-900;
+  }
+
+  /* 高对比度：投影场景下把边框与文字压到最深 */
+  .contrast-high .dl-card {
+    @apply border-2 border-black;
+  }
+
+  .dl-svg-text {
+    @apply select-none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+/* ============================================================
+   动态壁纸模式（<html class="wallpaper-on">，由 settings.tsx 与首屏内联脚本写入）
+
+   壁纸在最底层，内容直接压在它上面。这里**不铺任何主题色遮罩** ——
+   铺了就等于用「显示设置里的那个颜色」把壁纸包起来。
+   可读性改由「内容方框自己」承担：方框做成毛玻璃，
+   颜色直接取自它背后的壁纸，于是方框和壁纸天然是同一个色系。
+
+   ⚠️ 这些规则刻意写在所有 @layer 之外：
+   Tailwind 的工具类都住在 utilities 层，而层与层之间是「后声明的层整体优先」，
+   层内特异性再高也翻不过去；只有**未分层**的规则才能稳定压过工具类。
+   ============================================================ */
+html.wallpaper-on .dl-card {
+  background-color: rgb(248 250 252 / 0.78);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
+}
+.dark.wallpaper-on .dl-card {
+  background-color: rgb(2 6 23 / 0.65);
+}
+
+/* 卡片内部的分区面板：同一套毛玻璃语言（浅色模式的 bg-slate-50 / 深色模式的 800/40·50） */
+html.wallpaper-on [class~='bg-slate-50'],
+html.wallpaper-on [class~='bg-slate-100'] {
+  background-color: rgb(255 255 255 / 0.35);
+}
+.dark.wallpaper-on [class~='dark:bg-slate-800/40'],
+.dark.wallpaper-on [class~='dark:bg-slate-800/50'] {
+  background-color: rgb(30 41 59 / 0.35);
+}
+
+/* 顶栏与移动端标签栏：从「近乎不透明」降到毛玻璃，让壁纸透上来 */
+html.wallpaper-on [class~='bg-white/85'],
+html.wallpaper-on [class~='bg-white/95'] {
+  background-color: rgb(255 255 255 / 0.6);
+}
+.dark.wallpaper-on [class~='dark:bg-slate-950/85'],
+.dark.wallpaper-on [class~='dark:bg-slate-950/95'] {
+  background-color: rgb(2 6 23 / 0.6);
+}
+
+/* 直接压在壁纸上的标题与正文：加一层与主题同向的光晕，任何画面上都能读清 */
+html.wallpaper-on main h1,
+html.wallpaper-on main h2,
+html.wallpaper-on main h3,
+html.wallpaper-on main p {
+  text-shadow:
+    0 1px 2px rgb(255 255 255 / 0.85),
+    0 0 12px rgb(255 255 255 / 0.55);
+}
+.dark.wallpaper-on main h1,
+.dark.wallpaper-on main h2,
+.dark.wallpaper-on main h3,
+.dark.wallpaper-on main p {
+  text-shadow:
+    0 1px 3px rgb(0 0 0 / 0.75),
+    0 0 12px rgb(0 0 0 / 0.5);
+}

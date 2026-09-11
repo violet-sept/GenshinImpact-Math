@@ -1,0 +1,39 @@
+# ---------- 依赖与构建产物 ----------
+node_modules/
+dist/
+dist-ssr/
+coverage/
+.vite/
+*.tsbuildinfo
+vite.config.ts.timestamp-*
+
+# ---------- 动态壁纸视频 ----------
+# 那段壁纸视频有 135MB，超过 GitHub「单文件 100MB」的硬上限，push 会直接被拒。
+# 本地开发：把文件放到 public/wallpaper/ 就会被自动使用（见该目录下的 README）。
+# 线上部署：用 VITE_WALLPAPER_URL 指向你自己的外链。
+public/wallpaper/*
+!public/wallpaper/README.md
+
+# ---------- 环境变量 ----------
+# 只提交 .env.example，真实配置（含外链地址）不进仓库
+.env
+.env.*
+!.env.example
+
+# ---------- 编辑器 / 操作系统 ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.local
+
+# ---------- 日志 ----------
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- 工具中间产物 ----------
+# tools/pick-big-idea-stickers.ps1 生成表情包时落下的临时脚本与预览图
+_tmp*

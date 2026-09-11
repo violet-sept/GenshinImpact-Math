@@ -1,0 +1,44 @@
+{
+  "name": "discrete-lab",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "离散实验室 — 用交互式动画讲解离散数学",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/violet-sept/GenshinImpact-Math.git"
+  },
+  "homepage": "https://violet-sept.github.io/GenshinImpact-Math/",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev:shim": "node --require ./scripts/exec-shim.cjs ./node_modules/vite/bin/vite.js",
+    "build:shim": "tsc --noEmit && node --require ./scripts/exec-shim.cjs ./node_modules/vite/bin/vite.js build",
+    "preview:shim": "node --require ./scripts/exec-shim.cjs ./node_modules/vite/bin/vite.js preview --port 4173 --strictPort"
+  },
+  "dependencies": {
+    "motion": "^13.2.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^7.18.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^22.20.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.0"
+  }
+}

@@ -1,0 +1,25 @@
+# 开发机是 Windows、CI 是 Linux，不锁死换行符的话 diff 会被 CRLF 噪声淹没。
+# 仓库里统一存 LF，检出时按平台/类型给回合适的。
+* text=auto eol=lf
+
+# Windows 脚本必须带 CRLF，否则某些旧版 cmd.exe / PowerShell 5.1 会读出错行
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# 二进制：别做任何换行或编码转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.mp4 binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+# 锁文件与生成物：合并冲突时不可读，也基本不需要人工合并
+package-lock.json -diff linguist-generated
+
+# 让 GitHub 的语言统计别把文档当代码
+*.md linguist-documentation

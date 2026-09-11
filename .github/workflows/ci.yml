@@ -1,0 +1,48 @@
+name: CI
+
+# 门禁：类型检查 + 单测 + 生产构建。
+# 部署走单独的 deploy.yml，两份工作流刻意分开：
+# CI 要在 PR 上跑（PR 不该发布），deploy 只在 main 上跑。
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 同一分支上后一次 push 顶掉前一次还在跑的检查
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    name: typecheck / test / build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # 与开发机保持一致（Vite 8 要求 ^20.19 || >=22.12）
+          node-version: '24'
+          cache: npm
+
+      # 用 ci 而不是 install：严格按 package-lock.json 装，锁文件与 package.json 不一致时直接失败
+      - run: npm ci
+
+      - name: 类型检查
+        run: npm run typecheck
+
+      - name: 单元测试 + 内容契约测试
+        run: npm test
+
+      # 构建用普通脚本即可：ubuntu 上不存在 exec-shim 要绕开的那个 EPERM 限制。
+      #
+      # 这里**故意不注入 VITE_WALLPAPER_URL**：于是 CI 每次都在构建「没有壁纸」的那条分支，
+      # 而 deploy.yml 构建的是「有壁纸」的分支。两条路每次推送都会被真正编译一遍 ——
+      # 壁纸那套降级逻辑正是最容易只测到一半的地方。
+      - name: 生产构建
+        run: npm run build

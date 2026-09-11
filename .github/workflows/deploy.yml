@@ -1,0 +1,72 @@
+name: Deploy to GitHub Pages
+
+# 推到 main 就自动构建并发布；也可以在 Actions 页面手动触发。
+#
+# 前置设置（只做一次）：
+#   Settings → Pages → Build and deployment → Source 选「GitHub Actions」
+#
+# 动态壁纸开箱即用：视频由本仓库 v1.0 Release 的附件提供，工作流里已写好默认地址。
+# 想换成自己的存储，再设 Variables → VITE_WALLPAPER_URL 覆盖即可。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GITHUB_TOKEN 需要这些权限才能发布 Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同时只允许一个发布在跑；排队中的旧任务直接取消，但不打断正在进行的发布
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 构建静态站点
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      # 与 CI 同一套门禁：宁可发布失败，也不要发一个白屏的站点上去
+      - name: 类型检查
+        run: npm run typecheck
+
+      - name: 测试
+        run: npm test
+
+      - name: 生产构建
+        run: npm run build
+        env:
+          # 壁纸视频不在仓库里（135MB，超过 GitHub 单文件 100MB 上限），改由外链提供。
+          # 默认就指向本仓库自己的 Release 附件（v1.0，与本地那份 sha256 一致），
+          # 所以**不用配置任何东西，线上站就有壁纸**。
+          # 想换地址：Settings → Secrets and variables → Actions → Variables
+          # 新建 VITE_WALLPAPER_URL，会覆盖下面这个默认值。
+          VITE_WALLPAPER_URL: ${{ vars.VITE_WALLPAPER_URL || 'https://github.com/violet-sept/GenshinImpact-Math/releases/download/v1.0/nahida.mp4' }}
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: 发布到 Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

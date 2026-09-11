@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta
+      name="description"
+      content="离散数学 —— 用可以上手拖的交互式动画，把集合、关系、图论、逻辑这些看不见的结构变成看得见、玩得懂的东西。"
+    />
+    <title>高等元素论—离散数学篇</title>
+    <script>
+      // 在首帧之前应用主题与字号，避免深色模式闪白
+      ;(function () {
+        try {
+          var s = localStorage.getItem('dl.settings.v1')
+          var t = s ? JSON.parse(s) : {}
+          var theme = t.theme || 'dark'
+          var dark =
+            theme === 'dark' ||
+            (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          var el = document.documentElement
+          if (dark) el.classList.add('dark')
+          if (t.contrast) el.classList.add('contrast-high')
+          if (t.fontScale) el.style.setProperty('--dl-font-scale', String(t.fontScale))
+          if (t.motion === 'off') el.classList.add('motion-off')
+          // 动态壁纸：默认开启，且与浅色 / 深色无关；减少动态效果或高对比度时停用。
+          // 壁纸视频不在仓库里，没有可用地址时**绝不能**铺毛玻璃 ——
+          // 否则卡片会半透明地压在一片空白上。这个布尔值由 vite.config.ts 在构建期注入，
+          // 与 src/platform/settings.tsx 的 HAS_WALLPAPER 同源。
+          var reduce = t.motion === 'off' || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          var hasWallpaper = __DL_HAS_WALLPAPER__
+          if (hasWallpaper && t.wallpaper !== false && !t.contrast && !reduce) el.classList.add('wallpaper-on')
+        } catch (e) {
+          /* 首屏增强，失败可忽略 */
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
