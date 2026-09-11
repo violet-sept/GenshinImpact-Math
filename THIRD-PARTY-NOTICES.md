@@ -2,6 +2,8 @@
 
 本仓库的**源代码**以 [MIT](./LICENSE) 授权。但仓库里还包含一部分**不属于我、也不在 MIT 覆盖范围内**的美术素材，在此单独声明。
 
+**授权范围 / Scope：** [LICENSE](./LICENSE) 里是标准 MIT 原文，**只覆盖源代码**（TypeScript / CSS / HTML / 构建脚本），不包含任何美术素材。The MIT license covers the **source code only**. Art assets originating from the game "Genshin Impact" remain the property of miHoYo / COGNOSPHERE and are **NOT** covered by it — see the sections below.
+
 ---
 
 ## 1. 《原神》游戏素材

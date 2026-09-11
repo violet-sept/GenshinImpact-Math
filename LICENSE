@@ -19,16 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-================================================================================
-注意 / NOTE
-
-上面的 MIT 协议**只覆盖本项目的源代码**（TypeScript / CSS / HTML / 构建脚本）。
-
-仓库内还包含来自游戏《原神》的官方表情包与截图素材，其版权归米哈游
-（miHoYo / COGNOSPHERE）所有，**不在 MIT 授权范围内**。
-详见 THIRD-PARTY-NOTICES.md。
-
-The MIT license above covers the SOURCE CODE ONLY. Art assets originating from
-the game "Genshin Impact" remain the property of miHoYo / COGNOSPHERE and are
-NOT covered by this license. See THIRD-PARTY-NOTICES.md.
