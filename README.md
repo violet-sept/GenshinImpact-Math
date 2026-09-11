@@ -60,7 +60,7 @@ npm run preview      # 本地预览 dist/，默认 http://localhost:4173
 
 ## 关于动态壁纸（为什么仓库里没有那段视频）
 
-原来 `public/wallpaper/nahida.mp4` 文件有 **135MB**。它超过了GitHub上限的**100Mb**,进不了仓库，所以我是用release作为直链连接的。另外，
+原来 `public/wallpaper/nahida.mp4` 文件有 **135MB**。它超过了GitHub上限的**100MB**,进不了仓库，所以我是用release作为直链连接的。另外，
 打开网站后可能不会立刻出现动态壁纸，这是正常现象，稍等一会或者在显示设置当中尝试更改设置即可。
 
 ## 这个站现在有什么
