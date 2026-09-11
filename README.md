@@ -60,34 +60,7 @@ npm run preview      # 本地预览 dist/，默认 http://localhost:4173
 
 ## 关于动态壁纸（为什么仓库里没有那段视频）
 
-原来 `public/wallpaper/nahida.mp4` 有 **135MB**。它进不了仓库，有三个独立的原因：
-
-1. **GitHub 硬上限**：单文件超过 100MB，`git push` 会被直接拒绝 —— 有它在，这个仓库根本推不上去。
-2. **版权**：壁纸画面来自《原神》，和站内表情包一样属于米哈游素材（见 [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)）。
-3. **带宽**：135MB 的自动播放视频意味着每打开一次页面就要下载 135MB。GitHub Pages 每月 100GB 软带宽大约只够 **700 多次访问**就被限流。
-
-所以壁纸改成了**可选外链**，三种情况：
-
-| 场景 | 怎么做 |
-| --- | --- |
-| 本机开发想看壁纸 | 什么都不用配。把任意 mp4 命名成 `nahida.mp4` 放进 `public/wallpaper/` 即可（`npm run dev` 和 `start-site.cmd` 都会自动用它） |
-| 线上站也要壁纸 | **已经配好了** —— `deploy.yml` 默认指向本仓库 v1.0 Release 的附件（见上一节） |
-| 想换成自己的地址 | 设仓库变量 `VITE_WALLPAPER_URL` 覆盖默认值 |
-| 完全不要壁纸 | 把默认值清空即可，页面会自动退回纯主题色背景 |
-
-**没有视频时不会出现「毛玻璃压在空白上」。** 这一层是刻意做的：
-壁纸模式下卡片与面板都是半透明毛玻璃、颜色取自背后的画面；如果视频加载不出来还留着毛玻璃，
-卡片就会半透明地压在一片空白上，正文对比度直接不达标。所以：
-
-- 构建期就知道这次有没有壁纸（`vite.config.ts` 按 mode + 环境变量判定），
-  没有的话**连 `<video>` 都不渲染**，也不会发一个必然 404 的请求；
-- 首屏内联脚本拿到的是同一个布尔值，不会先铺毛玻璃再撤回；
-- 万一外链失效（地址填错 / 文件被删），`<video>` 的 `onError` 会通知 `settings` 把整层收掉，退回纯主题色背景；
-- 没有壁纸可放时，「显示设置」里的那一项**整组都不出现** —— 留一个按了没反应的开关只会误导人。
-
-细节见 `src/platform/settings.tsx`、`src/layout/DynamicWallpaper.tsx`、`public/wallpaper/README.md` 与 [`.env.example`](./.env.example)。
-
----
+原来 `public/wallpaper/nahida.mp4` 有 **135MB**。它进不了仓库，所以我是用release作为直链连接的
 
 ## 这个站现在有什么
 
